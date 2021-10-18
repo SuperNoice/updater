@@ -8,7 +8,7 @@ using System.Security.AccessControl;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace updater
+namespace Updater
 {
     static class Program
     {

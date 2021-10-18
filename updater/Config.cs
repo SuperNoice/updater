@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 
-namespace updater
+namespace Updater
 {
     class Config
     {

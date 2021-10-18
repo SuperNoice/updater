@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace updater
+namespace Updater
 {
     public partial class MainForm : Form
     {

@@ -27,7 +27,7 @@ namespace updater
                     case "updateInfoLink":
                         config.UpdateInfoLink = option.Value;
                         break;
-                    case "updateFileLink=":
+                    case "updateFileLink":
                         config.UpdateFileLink = option.Value;
                         break;
                     default:

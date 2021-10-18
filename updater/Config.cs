@@ -5,12 +5,15 @@ namespace updater
 {
     class Config
     {
-        public string Version { get; set; }
-        public string UpdateInfoLink { get; set; }
-        public string UpdateFileLink { get; set; }
+        public string Version { get; set; } = "";
+        public string UpdateInfoLink { get; set; } = "";
+        public string UpdateFileLink { get; set; } = "";
 
-        private Config() { }
-
+        /// <summary>
+        /// Читает файл конфигурации
+        /// </summary>
+        /// <param name="filePath">Путь до файла</param>
+        /// <returns>Объект конфигурации</returns>
         public static Config Parse(string filePath)
         {
             var config = new Config();
@@ -37,7 +40,10 @@ namespace updater
 
             return config;
         }
-
+        /// <summary>
+        /// Создает файл конфигурации или если файл существует перезаписывает его.
+        /// </summary>
+        /// <param name="filePath">Путь до файла</param>
         public void Save(string filePath)
         {
             StreamWriter configFile = File.AppendText(filePath);
@@ -47,7 +53,10 @@ namespace updater
             configFile.Flush();
             configFile.Close();
         }
-
+        /// <summary>
+        /// Создает пустой файл конфигурации или если файл существует перезаписывает его.
+        /// </summary>
+        /// <param name="filePath"></param>
         public static void CreateClearConfigFile(string filePath)
         {
             StreamWriter configFile = File.AppendText(filePath);

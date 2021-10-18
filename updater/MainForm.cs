@@ -12,6 +12,8 @@ namespace updater
 {
     public partial class MainForm : Form
     {
+        private Update _updateController;
+
         public MainForm()
         {
             InitializeComponent();
@@ -20,6 +22,11 @@ namespace updater
         private void MainForm_Load(object sender, EventArgs e)
         {
 
+        }
+
+        public void SetUpdateController(Update controller)
+        {
+            _updateController = controller;
         }
     }
 }

@@ -20,7 +20,11 @@ namespace updater
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm());
+
+            var updateForm = new MainForm();
+            var updateController = new Update(updateForm);
+
+            Application.Run(updateForm);
         }
     }
 }

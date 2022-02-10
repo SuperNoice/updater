@@ -83,7 +83,7 @@ namespace Updater.Controllers
             webClient.DownloadProgressChanged += ProgressChanged;
 
             Status = $"Скачивание файла: {fileName}";
-            Task downloading = webClient.DownloadFileTaskAsync(fileLink, "update.zip");
+            Task downloading = webClient.DownloadFileTaskAsync(fileLink, Application.StartupPath + "update.zip");
 
             while (!downloading.IsCompleted)
             {
@@ -99,7 +99,7 @@ namespace Updater.Controllers
             Thread.Sleep(500);
             Status = $"Установка...";
             DownloadProgress = 0;
-            using (FileStream zipToOpen = new FileStream("update.zip", FileMode.Open))
+            using (FileStream zipToOpen = new FileStream(Application.StartupPath + "update.zip", FileMode.Open))
             {
                 var archive = new ZipArchive(zipToOpen, ZipArchiveMode.Read, false, Encoding.GetEncoding(System.Globalization.CultureInfo.CurrentCulture.TextInfo.OEMCodePage));
 
@@ -114,7 +114,7 @@ namespace Updater.Controllers
                         return;
                     }
 
-                    string fullPath = Path.Combine("./", archiveEntry.FullName);
+                    string fullPath = Path.Combine(Application.StartupPath, archiveEntry.FullName);
                     if (archiveEntry.Name == "")
                     {
                         Directory.CreateDirectory(fullPath);
@@ -133,7 +133,7 @@ namespace Updater.Controllers
             Settings.Default.Save();
 
             Status = $"Удаление временных файлов...";
-            File.Delete("update.zip");
+            File.Delete(Application.StartupPath + "update.zip");
 
             Status = $"Установка завершена!";
             Thread.Sleep(2000);

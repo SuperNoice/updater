@@ -38,13 +38,17 @@ namespace Updater
                         Properties.Settings.Default.lastUpdateDate = DateTime.MinValue;
                         Properties.Settings.Default.Save();
 
-                        var dirInfo = new DirectoryInfo("./");
+                        var dirInfo = new DirectoryInfo(Application.StartupPath);
                         var files = dirInfo.GetFiles();
                         var dirs = dirInfo.GetDirectories();
 
                         foreach (var dir in dirs)
                         {
-                            Directory.Delete(dir.FullName, true);
+                            try
+                            {
+                                Directory.Delete(dir.FullName, true);
+                            }
+                            catch (Exception) { }
                         }
 
                         var whiteList = new string[] { "updater.exe", "updater.exe.config" };
@@ -52,9 +56,14 @@ namespace Updater
                         {
                             if (!whiteList.Contains(file.Name))
                             {
-                                file.Delete();
+                                try
+                                {
+                                    file.Delete();
+                                }
+                                catch (Exception) { }
                             }
                         }
+
                         break;
 
                     default:

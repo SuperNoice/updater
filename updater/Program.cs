@@ -15,6 +15,9 @@ namespace Updater
         [STAThread]
         static void Main(string[] argv)
         {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+
             MainForm updateForm = new MainForm();
 
             for (int pointer = 0; pointer < argv.Length; pointer++)
@@ -58,9 +61,6 @@ namespace Updater
                         break;
                 }
             }
-
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
 
             Application.Run(updateForm);
         }

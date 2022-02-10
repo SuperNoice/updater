@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Windows.Forms;
 using Updater.Controllers;
 using Updater.Properties;
@@ -40,6 +41,13 @@ namespace Updater.Views
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            if (File.Exists(Path.Combine(Application.StartupPath, "filelink.cfg")))
+            {
+                var text = File.ReadAllText(Path.Combine(Application.StartupPath, "filelink.cfg"));
+                Settings.Default.fileLink = text.Trim();
+                Settings.Default.Save();
+            }
+
             // Восстановление настроек после смены папки или версии
             if (Settings.Default.UpdateNeeded)
             {
@@ -54,6 +62,7 @@ namespace Updater.Views
 
         private void MainForm_Shown(object sender, EventArgs e)
         {
+            // TODO: Сделать WebHeaderHelper асинхронным и выводить ошибки подключения к интернету пользователю
             try
             {
                 WebHeaderHelper.GetHeader(Settings.Default.fileLink);

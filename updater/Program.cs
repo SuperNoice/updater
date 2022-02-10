@@ -63,7 +63,7 @@ namespace Updater
                         }
 
                         _ignoreExeptions = false;
-                        var whiteList = new string[] { "updater.exe", "updater.exe.config" };
+                        var whiteList = new string[] { "updater.exe", "updater.exe.config", "filelink.cfg" };
                         foreach (var file in files)
                         {
                             if (!whiteList.Contains(file.Name))

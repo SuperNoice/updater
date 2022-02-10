@@ -1,5 +1,5 @@
 ﻿
-namespace Updater
+namespace Updater.Views
 {
     partial class MainForm
     {
@@ -29,8 +29,11 @@ namespace Updater
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.updatingStatusLabel = new System.Windows.Forms.Label();
+            this.updateControllerBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            ((System.ComponentModel.ISupportInitialize)(this.updateControllerBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // progressBar
@@ -52,6 +55,10 @@ namespace Updater
             this.updatingStatusLabel.TabIndex = 1;
             this.updatingStatusLabel.Text = "Starting";
             // 
+            // updateControllerBindingSource
+            // 
+            this.updateControllerBindingSource.DataSource = typeof(Updater.Controllers.UpdateController);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -59,10 +66,15 @@ namespace Updater
             this.ClientSize = new System.Drawing.Size(404, 121);
             this.Controls.Add(this.updatingStatusLabel);
             this.Controls.Add(this.progressBar);
+            this.MaximumSize = new System.Drawing.Size(420, 160);
+            this.MinimumSize = new System.Drawing.Size(420, 160);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Updating";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
+            this.Shown += new System.EventHandler(this.MainForm_Shown);
+            ((System.ComponentModel.ISupportInitialize)(this.updateControllerBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -72,6 +84,7 @@ namespace Updater
 
         private System.Windows.Forms.ProgressBar progressBar;
         private System.Windows.Forms.Label updatingStatusLabel;
+        private System.Windows.Forms.BindingSource updateControllerBindingSource;
     }
 }
 

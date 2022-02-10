@@ -49,6 +49,7 @@
             this.linkTextBox.Size = new System.Drawing.Size(254, 20);
             this.linkTextBox.TabIndex = 1;
             this.linkTextBox.Text = "http://";
+            this.linkTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.linkTextBox_KeyDown);
             // 
             // okButton
             // 

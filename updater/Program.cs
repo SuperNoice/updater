@@ -42,15 +42,27 @@ namespace Updater
                         var files = dirInfo.GetFiles();
                         var dirs = dirInfo.GetDirectories();
 
+                        bool _ignoreExeptions = false;
                         foreach (var dir in dirs)
                         {
                             try
                             {
                                 Directory.Delete(dir.FullName, true);
                             }
-                            catch (Exception) { }
+                            catch (Exception e)
+                            {
+                                if (_ignoreExeptions)
+                                {
+                                    continue;
+                                }
+                                if (MessageBox.Show(e.Message, "Ошибка!", MessageBoxButtons.AbortRetryIgnore) == DialogResult.Ignore)
+                                {
+                                    _ignoreExeptions = true;
+                                }
+                            }
                         }
 
+                        _ignoreExeptions = false;
                         var whiteList = new string[] { "updater.exe", "updater.exe.config" };
                         foreach (var file in files)
                         {
@@ -60,10 +72,19 @@ namespace Updater
                                 {
                                     file.Delete();
                                 }
-                                catch (Exception) { }
+                                catch (Exception e)
+                                {
+                                    if (_ignoreExeptions)
+                                    {
+                                        continue;
+                                    }
+                                    if (MessageBox.Show(e.Message, "Ошибка!", MessageBoxButtons.AbortRetryIgnore) == DialogResult.Ignore)
+                                    {
+                                        _ignoreExeptions = true;
+                                    }
+                                }
                             }
                         }
-
                         break;
 
                     default:

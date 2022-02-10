@@ -15,6 +15,19 @@ namespace Updater.Views
 
         private void okButton_Click(object sender, EventArgs e)
         {
+            CheckAndSaveFileLink();
+        }
+
+        private void linkTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (Keys.Enter == e.KeyCode)
+            {
+                CheckAndSaveFileLink();
+            }
+        }
+
+        private void CheckAndSaveFileLink()
+        {
             if (linkTextBox.Text.Trim().Split('.').Last() != "zip")
             {
                 MessageBox.Show("Неверная ссылка!");

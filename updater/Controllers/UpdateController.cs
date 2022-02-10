@@ -21,13 +21,13 @@ namespace Updater.Controllers
 
         public bool BreakUpdateFlag { private set; get; } = false;
 
-        private int _downlodProgress;
+        private int _downloadProgress;
         public int DownloadProgress
         {
-            get { return _downlodProgress; }
+            get { return _downloadProgress; }
             set
             {
-                _downlodProgress = value;
+                _downloadProgress = value;
                 OnProgressChanged?.Invoke(value);
             }
         }
@@ -57,7 +57,7 @@ namespace Updater.Controllers
                 }
                 catch (Exception e)
                 {
-                    MessageBox.Show(e.StackTrace);
+                    MessageBox.Show(e.ToString());
                     OnUpdateCompleate?.Invoke(this, EventArgs.Empty);
                 }
             });
@@ -69,7 +69,7 @@ namespace Updater.Controllers
 
             string fileLink = Settings.Default.fileLink;
 
-            if (Settings.Default.lastUpdateDate != null && WebHeaderHelper.GetFileCreateDate(fileLink) < Settings.Default.lastUpdateDate)
+            if (Settings.Default.lastUpdateDate != default && WebHeaderHelper.GetFileCreateDate(fileLink) < Settings.Default.lastUpdateDate)
             {
                 Status = "Установлена актуальная версия!";
                 Thread.Sleep(2000);
@@ -137,7 +137,7 @@ namespace Updater.Controllers
 
             Status = $"Установка завершена!";
             Thread.Sleep(2000);
-            OnUpdateCompleate(this, EventArgs.Empty);
+            OnUpdateCompleate?.Invoke(this, EventArgs.Empty);
         }
 
         private void ProgressChanged(object sender, DownloadProgressChangedEventArgs e)

@@ -9,10 +9,9 @@ namespace Updater.Utils
         public static HttpContentHeaders GetHeader(string url)
         {
             HttpClient client = new HttpClient();
-            var task = client.SendAsync(new HttpRequestMessage(HttpMethod.Head, url));
-            task.Wait();
+            var task = client.SendAsync(new HttpRequestMessage(HttpMethod.Head, url)).GetAwaiter().GetResult();
 
-            return task.Result.Content.Headers;
+            return task.Content.Headers;
         }
 
 

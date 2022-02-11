@@ -63,7 +63,7 @@ namespace Updater.Controllers
             });
         }
 
-        private void Update()
+        private async void Update()
         {
             Status = "Считывание файла конфигурации...";
 
@@ -72,58 +72,68 @@ namespace Updater.Controllers
             if (Settings.Default.lastUpdateDate != default && WebHeaderHelper.GetFileCreateDate(fileLink) < Settings.Default.lastUpdateDate)
             {
                 Status = "Установлена актуальная версия!";
-                Thread.Sleep(2000);
+                await Task.Delay(2000);
                 OnUpdateCompleate?.Invoke(this, EventArgs.Empty);
                 return;
             }
 
             string fileName = fileLink.Split('/').Last();
 
-            WebClient webClient = new WebClient();
-            webClient.DownloadProgressChanged += ProgressChanged;
-
-            Status = $"Скачивание файла: {fileName}";
-            Task downloading = webClient.DownloadFileTaskAsync(fileLink, Application.StartupPath + "update.zip");
-
-            while (!downloading.IsCompleted)
+            using (WebClient webClient = new WebClient())
             {
-                if (BreakUpdateFlag)
-                {
-                    webClient.CancelAsync();
-                    OnUpdateCompleate?.Invoke(this, EventArgs.Empty);
-                    return;
-                }
-                Thread.Sleep(500);
-            }
+                webClient.DownloadProgressChanged += ProgressChanged;
 
-            Thread.Sleep(500);
-            Status = $"Установка...";
-            DownloadProgress = 0;
-            using (FileStream zipToOpen = new FileStream(Application.StartupPath + "update.zip", FileMode.Open))
-            {
-                var archive = new ZipArchive(zipToOpen, ZipArchiveMode.Read, false, Encoding.GetEncoding(System.Globalization.CultureInfo.CurrentCulture.TextInfo.OEMCodePage));
+                Status = $"Скачивание файла: {fileName}";
+                Task downloading = webClient.DownloadFileTaskAsync(fileLink, Path.Combine(Application.StartupPath, "update.zip"));
 
-                double progressStep = 100 / archive.Entries.Count;
-                int pointer = 0;
-
-                foreach (ZipArchiveEntry archiveEntry in archive.Entries)
+                while (!downloading.IsCompleted)
                 {
                     if (BreakUpdateFlag)
                     {
+                        webClient.CancelAsync();
                         OnUpdateCompleate?.Invoke(this, EventArgs.Empty);
                         return;
                     }
+                    await Task.Delay(500);
+                }
+            }
 
-                    string fullPath = Path.Combine(Application.StartupPath, archiveEntry.FullName);
-                    if (archiveEntry.Name == "")
+            if (new FileInfo(Path.Combine(Application.StartupPath, "update.zip")).Length == 0)
+            {
+                MessageBox.Show("Ошибка загрузки!");
+                OnUpdateCompleate?.Invoke(this, EventArgs.Empty);
+                return;
+            }
+
+            await Task.Delay(500);
+            Status = $"Установка...";
+            DownloadProgress = 0;
+            using (FileStream zipToOpen = new FileStream(Path.Combine(Application.StartupPath, "update.zip"), FileMode.Open))
+            {
+                using (ZipArchive archive = new ZipArchive(zipToOpen, ZipArchiveMode.Read, false, Encoding.GetEncoding(System.Globalization.CultureInfo.CurrentCulture.TextInfo.OEMCodePage)))
+                {
+                    double progressStep = 100 / archive.Entries.Count;
+                    int pointer = 0;
+
+                    foreach (ZipArchiveEntry archiveEntry in archive.Entries)
                     {
-                        Directory.CreateDirectory(fullPath);
+                        if (BreakUpdateFlag)
+                        {
+                            OnUpdateCompleate?.Invoke(this, EventArgs.Empty);
+                            return;
+                        }
+
+                        string fullPath = Path.Combine(Application.StartupPath, archiveEntry.FullName);
+                        if (archiveEntry.Name == "")
+                        {
+                            Directory.CreateDirectory(fullPath);
+                        }
+                        else
+                        {
+                            archiveEntry.ExtractToFile(fullPath, true);
+                        }
+                        DownloadProgress = Convert.ToInt32(progressStep * (++pointer));
                     }
-                    else
-                    {
-                        archiveEntry.ExtractToFile(fullPath, true);
-                    }
-                    DownloadProgress = Convert.ToInt32(progressStep * (++pointer));
                 }
             }
 
@@ -133,10 +143,10 @@ namespace Updater.Controllers
             Settings.Default.Save();
 
             Status = $"Удаление временных файлов...";
-            File.Delete(Application.StartupPath + "update.zip");
+            File.Delete(Path.Combine(Application.StartupPath, "update.zip"));
 
             Status = $"Установка завершена!";
-            Thread.Sleep(2000);
+            await Task.Delay(2000);
             OnUpdateCompleate?.Invoke(this, EventArgs.Empty);
         }
 

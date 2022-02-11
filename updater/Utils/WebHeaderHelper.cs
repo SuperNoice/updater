@@ -11,6 +11,11 @@ namespace Updater.Utils
             HttpClient client = new HttpClient();
             var task = client.SendAsync(new HttpRequestMessage(HttpMethod.Head, url)).GetAwaiter().GetResult();
 
+            if (task.Content.Headers.LastModified == null)
+            {
+                throw new Exception("Некоректный ответ");
+            }
+
             return task.Content.Headers;
         }
 
